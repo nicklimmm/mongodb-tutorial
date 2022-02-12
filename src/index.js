@@ -19,22 +19,24 @@ async function main() {
   await pet2.save();
   const pet3 = await Pet.create({ name: "Carly", type: "Frog" });
 
-  await User.insertMany([
-    {
-      firstName: "John",
-      lastName: "Buddy",
-      age: 20,
-      address: { city: "Sydney", country: "Australia" },
-      pets: [pet1],
-    },
-    {
-      firstName: "Brad",
-      lastName: "Cooper",
-      age: 23,
-      address: { city: "Jakarta", country: "Indonesia" },
-      pets: [pet2, pet3],
-    },
-  ]);
+  await User.create({
+    username: "john123",
+    password: "12341234",
+    firstName: "John",
+    lastName: "Buddy",
+    age: 20,
+    address: { city: "Sydney", country: "Australia" },
+    pets: [pet1],
+  });
+  await User.create({
+    username: "brad123",
+    password: "12341234",
+    firstName: "Brad",
+    lastName: "Cooper",
+    age: 23,
+    address: { city: "Jakarta", country: "Indonesia" },
+    pets: [pet2, pet3],
+  });
 
   // Read
   //   const users = await User.find({ firstName: "John" }); // Returns an array of documents

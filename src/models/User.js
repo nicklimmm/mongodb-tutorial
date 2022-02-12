@@ -1,7 +1,17 @@
 const mongoose = require("mongoose");
 const { petSchema } = require("./Pet");
+const uniqueValidator = require("mongoose-unique-validator");
 
 const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
   firstName: {
     type: String,
     required: true,
@@ -19,6 +29,18 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   pets: [petSchema],
+});
+
+// Impose uniqueness
+userSchema.plugin(uniqueValidator);
+
+userSchema.pre("save", function (next) {
+  console.log(`Saving User: ${this.firstName} ${this.lastName}`);
+  next();
+});
+
+userSchema.post("save", function () {
+  console.log(`User saved: ${this.firstName} ${this.lastName}`);
 });
 
 userSchema.virtual("fullName").get(function () {
