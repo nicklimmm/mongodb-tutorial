@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  // NOTE: no hashing is implemented for simplicity reasons
   password: {
     type: String,
     required: true,
@@ -42,6 +43,11 @@ userSchema.pre("save", function (next) {
 userSchema.post("save", function () {
   console.log(`User saved: ${this.firstName} ${this.lastName}`);
 });
+
+userSchema.methods.comparePassword = function (password) {
+  // this.password -> belongs the user; password -> given from an input
+  return this.password === password;
+};
 
 userSchema.virtual("fullName").get(function () {
   return this.firstName + " " + this.lastName;

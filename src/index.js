@@ -1,11 +1,51 @@
 const mongoose = require("mongoose");
+const express = require("express");
+const session = require("express-session");
+const passport = require("passport");
+const MongoStore = require("connect-mongo");
+const AuthRouter = require("./routes/auth");
 const { User } = require("./models/User");
 const { Pet } = require("./models/Pet");
 require("dotenv").config();
 
 async function main() {
+  const app = express();
   const conn = await mongoose.connect(process.env.DB_URI);
   await conn.connection.db.dropDatabase();
+
+  // To store sessions in db
+  const sessionStore = MongoStore.create({
+    client: mongoose.connection.getClient(),
+    collectionName: "sessions",
+  });
+
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  app.use(
+    session({
+      store: sessionStore,
+      secret: process.env.SESSION_SECRET,
+      cookie: {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      },
+      resave: false,
+      saveUninitialized: true,
+    })
+  );
+
+  // Passport
+  require("./passportConfig");
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Routers
+  app.use("/auth", AuthRouter);
+
+  app.listen(8080, () => {
+    console.log("Server running at localhost:8080");
+  });
 
   console.log("Connected to DB");
 
