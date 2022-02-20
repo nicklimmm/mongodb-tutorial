@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 const { User } = require("../models/User");
 
 router.post("/register", async (req, res) => {
@@ -8,7 +9,6 @@ router.post("/register", async (req, res) => {
     - check if username is not in db (unique username)
     - save new user
     */
-  console.log(req.body);
   const user = await User.findOne({ username: req.body.username });
   if (user) {
     return res.status(400).json({ message: "User with that username exists" });
@@ -24,8 +24,13 @@ router.post("/register", async (req, res) => {
   res.json({ message: "Register successful" });
 });
 
-router.post("/login");
+router.post("/login", passport.authenticate("local"), (req, res) => {
+  res.json({ message: "Login successful" });
+});
 
-router.post("/logout");
+router.post("/logout", (req, res) => {
+  req.logout();
+  res.json({ message: "Logout successful" });
+});
 
 module.exports = router;

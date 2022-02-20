@@ -4,6 +4,7 @@ const session = require("express-session");
 const passport = require("passport");
 const MongoStore = require("connect-mongo");
 const AuthRouter = require("./routes/auth");
+const UsersRouter = require("./routes/users");
 const { User } = require("./models/User");
 const { Pet } = require("./models/Pet");
 require("dotenv").config();
@@ -42,6 +43,7 @@ async function main() {
 
   // Routers
   app.use("/auth", AuthRouter);
+  app.use("/users", UsersRouter);
 
   app.listen(8080, () => {
     console.log("Server running at localhost:8080");
@@ -67,6 +69,7 @@ async function main() {
     age: 20,
     address: { city: "Sydney", country: "Australia" },
     pets: [pet1],
+    isAdmin: true,
   });
   await User.create({
     username: "brad123",

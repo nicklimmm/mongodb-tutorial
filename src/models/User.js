@@ -29,7 +29,14 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  pets: [petSchema],
+  pets: {
+    type: [mongoose.Types.ObjectId],
+    ref: "Pet",
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // Impose uniqueness
